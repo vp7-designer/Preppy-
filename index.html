@@ -39,11 +39,9 @@ width:100%;
 max-width:430px;
 height:100vh;
 height:-webkit-fill-available;
-display:flex;
 flex-direction:column;
 position:relative;
 overflow:hidden;
-z-index:1;
 padding-bottom:env(safe-area-inset-bottom);
 }
 @media(min-width:480px){
@@ -55,21 +53,30 @@ body{padding:20px 16px;overflow:auto;align-items:flex-start;}
 #splash{
 position:fixed;
 top:0;left:0;right:0;bottom:0;
-width:100%;
-height:100%;
+width:100%;height:100%;
 background:var(–or);
-display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
 z-index:999;
-transition:opacity .6s ease;
+transition:opacity .5s ease;
 }
-#splash.hide{opacity:0;pointer-events:none;}
+#splash.hiding{opacity:0;}
 /* iOS tap highlight fix */
 *{-webkit-tap-highlight-color:transparent;}
 button,input,textarea{-webkit-appearance:none;appearance:none;}
-input[type=“number”]{-webkit-appearance:none;}
+input[type=“number”]{-webkit-appearance:textfield;}
+
+/* ── STATE MACHINE ── */
+/* Default: hide everything */
+#splash{display:none;}
+#onboarding{display:none;}
+.app{display:none;}
+
+/* Show only what matches current state */
+body.state-splash #splash{display:flex;}
+body.state-onboarding #onboarding{display:flex;}
+body.state-app .app{display:flex;}
 .splash-logo{margin-bottom:20px;animation:pulse 1.8s ease-in-out infinite;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
 .splash-name{font-family:‘DM Serif Display’,serif;font-size:32px;color:#fff;margin-bottom:40px;letter-spacing:-.5px;}
@@ -81,18 +88,13 @@ input[type=“number”]{-webkit-appearance:none;}
 #onboarding{
 position:fixed;
 top:0;left:0;right:0;bottom:0;
-width:100%;
-height:100%;
+width:100%;height:100%;
 background:var(–bg);
-display:none;
 flex-direction:column;
 z-index:180;
 overflow-y:auto;
 -webkit-overflow-scrolling:touch;
 padding-bottom:env(safe-area-inset-bottom);
-}
-#onboarding.show{
-display:flex !important;
 }
 #onboarding.show{display:flex;}
 .ob-wrap{flex:1;padding:24px 20px 32px;display:flex;flex-direction:column;}
@@ -150,9 +152,11 @@ overflow-y:auto;
 overscroll-behavior:contain;
 }
 .sc.on{display:block;}
-#sp-plan.on{display:flex;flex-direction:column;padding:0;}
-/* iOS fix: prevent rubber-band scroll bleeding */
-.sc.on{-webkit-overflow-scrolling:touch;}
+#sp-plan.on{
+display:flex !important;
+flex-direction:column;
+padding:0;
+}
 
 /* ── PLAN SCREEN ── */
 .gt{font-family:‘DM Serif Display’,serif;font-size:24px;color:var(–ink);margin-bottom:4px;line-height:1.25;}
@@ -321,7 +325,7 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 </script>
 
 </head>
-<body>
+<body class="state-splash">
 
 <!-- SPLASH -->
 
@@ -641,18 +645,24 @@ let ri=0;
 const br=["Great choice! Want me to suggest complementary meals for the week?","Got it! Any brand preferences for staples like oil or dal?","Noted! How often do you shop — once or twice a week?","Done! Check the Grocery tab for your full list 🛒"];
 
 // ── SPLASH ──
+function setState(state){
+  // Remove all states
+  document.body.className='';
+  // Add new state
+  document.body.classList.add('state-'+state);
+}
+
 window.addEventListener('load',()=>{
-  // Make sure onboarding is hidden at start
-  document.getElementById('onboarding').style.display='none';
+  // Start with splash
+  setState('splash');
   setTimeout(()=>{
-    document.getElementById('splash').classList.add('hide');
+    // Fade out splash
+    document.getElementById('splash').classList.add('hiding');
     setTimeout(()=>{
-      document.getElementById('splash').style.display='none';
-      const ob = document.getElementById('onboarding');
-      ob.style.display='flex';
-      ob.classList.add('show');
-    },600);
-  },2400);
+      // Show onboarding
+      setState('onboarding');
+    },500);
+  },2200);
 });
 
 // ── ONBOARDING ──
