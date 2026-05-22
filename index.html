@@ -14,17 +14,17 @@
 input,textarea,select{font-size:16px !important;}
 @media(min-width:480px){input,textarea,select{font-size:13px !important;}}
 :root{
-  --or:#E8845A;--orl:#FDF0EA;--or2:#d06840;
-  --ro:#D98A9A;--rol:#FDF0F3;
-  --ink:#1a1a1a;--mu:#888;--bg:#F5EFE6;--bd:#EDE0D4;
+  --or:#D4714E;--orl:#FAF0EB;--or2:#B85D3A;
+  --ro:#C4808F;--rol:#FAF0F2;
+  --ink:#1a1a1a;--mu:#888;--bg:#FAF6F1;--bd:#E8DDD4;
   --white:#fff;--green:#2e7d32;--greenl:#e8f5e9;
-  --card:#fff;
+  --card:#FFFFFF;
 }
 html{height:-webkit-fill-available;}
 html,body{height:100%;width:100%;overflow:hidden;}
 body{
   font-family:'DM Sans',sans-serif;
-  background:#EAE0D5;
+  background:#E8DDD4;
   display:flex;
   align-items:flex-start;
   justify-content:center;
@@ -800,9 +800,10 @@ async function analysePhoto(base64,mediaType){
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
           {type:'text',text:`This is a meal plan image. Extract meals for each day. User goal: ${goal}.
-Return ONLY valid JSON, no markdown:
-{"Mon":"meal","Tue":"meal","Wed":"meal","Thu":"meal","Fri":"meal","Sat":"meal","Sun":"meal"}
-Use empty string for missing days. Keep meals concise.`}
+Extract ALL meals visible. If you see Indian dish names, keep them as-is.
+Return ONLY valid JSON, no markdown, no explanation, no extra text:
+{"Mon":"full meal description","Tue":"full meal description","Wed":"full meal description","Thu":"full meal description","Fri":"full meal description","Sat":"full meal description","Sun":"full meal description"}
+Use empty string "" for days not visible. Preserve original meal names from the image.`}
         ]}]
       });
     const parsed=JSON.parse(data.content[0].text.trim());
@@ -824,18 +825,24 @@ Use empty string for missing days. Keep meals concise.`}
 
 // ── PLAN WITH AI ──
 async function planWithAI(){
-  const goal=document.getElementById('goal-inp').value||'healthy balanced Indian meals';
+  const goal=document.getElementById('goal-inp').value||'healthy balanced Indian home cooking';
   showAIBar('Planning your week with AI...');
+  document.getElementById('manual-form').classList.add('show');
   try{
     const data=await geminiFetch({
-        
-        max_tokens:800,
-        messages:[{role:'user',content:`Create a 7-day Indian meal plan. Goal: ${goal}.
-Return ONLY valid JSON, no markdown:
-{"Mon":"breakfast, lunch, dinner","Tue":"...","Wed":"...","Thu":"...","Fri":"...","Sat":"...","Sun":"..."}
-Keep concise. Realistic Indian meals.`}]
-      });
-    const parsed=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,''));
+      max_tokens:1000,
+      messages:[{role:'user',content:`Create a practical 7-day Indian home meal plan for someone whose goal is: ${goal}.
+
+Use common Indian home-cooked meals. Examples:
+- Breakfast options: Poha, Upma, Paratha with curd, Idli-sambar, Dosa, Bread omelette, Besan chilla, Moong dal chilla
+- Lunch options: Dal rice, Rajma chawal, Roti with sabzi, Chole rice, Kadhi chawal, Palak paneer roti, Aloo gobi roti
+- Dinner options: Roti with dal/sabzi/paneer, Khichdi, Vegetable soup, Dalia, Light salad with roti
+
+Return ONLY valid JSON, no markdown, no explanation, no extra text:
+{"Mon":"[breakfast], [lunch], [dinner]","Tue":"[breakfast], [lunch], [dinner]","Wed":"[breakfast], [lunch], [dinner]","Thu":"[breakfast], [lunch], [dinner]","Fri":"[breakfast], [lunch], [dinner]","Sat":"[breakfast], [lunch], [dinner]","Sun":"[breakfast], [lunch], [dinner]"}`}]
+    });
+    const raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(raw);
     ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach((d,i)=>{
       if(parsed[d]){
         meals[i]=parsed[d];
@@ -845,7 +852,7 @@ Keep concise. Realistic Indian meals.`}]
     });
     showAIBar('✓ AI meal plan ready!',true);
     sh('AI meal plan generated ✓');
-    gtag('event','ai_plan_generated');
+    try{gtag('event','ai_plan_generated');}catch(e){}
   }catch(err){
     showAIBar('Something went wrong — try again.',true);
     console.error(err);
@@ -865,19 +872,30 @@ async function generateGrocery(){
   if(!filled.length)return false;
   try{
     const data=await geminiFetch({
-        
-        max_tokens:1200,
-        messages:[{role:'user',content:`Generate grocery list from this meal plan:
-${days.map((d,i)=>d+': '+meals[i]).filter((_,i)=>meals[i]).join(', ')}
-Return ONLY valid JSON array, no markdown:
-[{"cat":"Vegetables","em":"🥦","items":[{"n":"item","q":"500","u":"g"}]},{"cat":"Dairy","em":"🥛","items":[...]},{"cat":"Grains & lentils","em":"🌾","items":[...]},{"cat":"Spices & oils","em":"🫙","items":[...]}]
-Use realistic Indian quantities. q must be a number string, u is the unit string.`}]
-      });
-    const parsed=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,''));
-    gd=parsed.filter(c=>c.items&&c.items.length);
+      max_tokens:2000,
+      messages:[{role:'user',content:`You are an expert Indian grocery planner. Based on this weekly meal plan, generate a COMPLETE grocery list with every single ingredient needed including all spices, oils, fresh herbs, dairy and staples.
+
+Weekly meal plan:
+${days.map((d,i)=>meals[i]?d+': '+meals[i]:'').filter(Boolean).join('\n')}
+
+Important rules:
+- List EVERY ingredient needed for each dish — do not skip anything
+- Always include base ingredients: onions, tomatoes, ginger, garlic, green chillies, fresh coriander
+- Always include whole spices: cumin seeds, mustard seeds, bay leaves, cloves, cardamom if needed
+- Always include ground spices: turmeric, red chilli powder, coriander powder, garam masala, cumin powder
+- Include cooking oil or ghee
+- Use Indian market quantities: vegetables in grams/kg, liquids in ml/L, spices in grams
+- Be thorough — a family should not need to buy anything extra
+
+Return ONLY a valid JSON array. No markdown, no explanation, no text before or after the JSON:
+[{"cat":"Vegetables & Herbs","em":"🥦","items":[{"n":"Onions","q":"1","u":"kg"},{"n":"Tomatoes","q":"500","u":"g"},{"n":"Ginger","q":"100","u":"g"},{"n":"Garlic","q":"1","u":"bulb"},{"n":"Green chillies","q":"50","u":"g"},{"n":"Fresh coriander","q":"1","u":"bunch"}]},{"cat":"Dairy & Alternatives","em":"🥛","items":[{"n":"Milk","q":"1","u":"L"},{"n":"Curd","q":"500","u":"g"}]},{"cat":"Grains & Lentils","em":"🌾","items":[{"n":"Basmati rice","q":"1","u":"kg"},{"n":"Toor dal","q":"500","u":"g"}]},{"cat":"Spices & Masalas","em":"🫙","items":[{"n":"Turmeric powder","q":"50","u":"g"},{"n":"Red chilli powder","q":"50","u":"g"},{"n":"Garam masala","q":"50","u":"g"},{"n":"Cumin seeds","q":"50","u":"g"},{"n":"Mustard seeds","q":"50","u":"g"}]},{"cat":"Oils & Condiments","em":"🫒","items":[{"n":"Cooking oil","q":"500","u":"ml"},{"n":"Ghee","q":"200","u":"g"}]}]`}]
+    });
+    const raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(raw);
+    gd=parsed.filter(c=>c.items&&c.items.length>0);
     chk={};
     return true;
-  }catch(err){console.error(err);return false;}
+  }catch(err){console.error('Grocery error:',err);return false;}
 }
 
 // ── LOADING FLOW ──
