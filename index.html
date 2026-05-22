@@ -531,7 +531,7 @@ async function sendChat(){
   t.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
   msgs.appendChild(t);msgs.scrollTop=msgs.scrollHeight;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHistory})});
+    const res=await fetch('/api/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHistory})});
     const data=await res.json();
     t.remove();
     const reply=data.content?.map(i=>i.text||'').join('')||"Sorry, I couldn't get a response. Try again!";
