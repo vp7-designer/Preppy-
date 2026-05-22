@@ -43,7 +43,7 @@ display:flex;
 flex-direction:column;
 position:relative;
 overflow:hidden;
-/* iOS safe area */
+z-index:1;
 padding-bottom:env(safe-area-inset-bottom);
 }
 @media(min-width:480px){
@@ -55,12 +55,14 @@ body{padding:20px 16px;overflow:auto;align-items:flex-start;}
 #splash{
 position:fixed;
 top:0;left:0;right:0;bottom:0;
+width:100%;
+height:100%;
 background:var(–or);
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-z-index:200;
+z-index:999;
 transition:opacity .6s ease;
 }
 #splash.hide{opacity:0;pointer-events:none;}
@@ -79,14 +81,18 @@ input[type=“number”]{-webkit-appearance:none;}
 #onboarding{
 position:fixed;
 top:0;left:0;right:0;bottom:0;
+width:100%;
+height:100%;
 background:var(–bg);
 display:none;
 flex-direction:column;
-z-index:150;
+z-index:180;
 overflow-y:auto;
 -webkit-overflow-scrolling:touch;
-/* iOS safe area */
 padding-bottom:env(safe-area-inset-bottom);
+}
+#onboarding.show{
+display:flex !important;
 }
 #onboarding.show{display:flex;}
 .ob-wrap{flex:1;padding:24px 20px 32px;display:flex;flex-direction:column;}
@@ -214,11 +220,13 @@ button.bs{flex:1;padding:14px 8px;background:var(–rol);color:var(–ro);border
 .lo{
 position:fixed;
 top:0;left:0;right:0;bottom:0;
+width:100%;
+height:100%;
 background:rgba(253,246,240,.97);
 display:none;
 align-items:center;
 justify-content:center;
-z-index:100;
+z-index:170;
 flex-direction:column;
 padding:32px;
 text-align:center;
@@ -634,11 +642,15 @@ const br=["Great choice! Want me to suggest complementary meals for the week?","
 
 // ── SPLASH ──
 window.addEventListener('load',()=>{
+  // Make sure onboarding is hidden at start
+  document.getElementById('onboarding').style.display='none';
   setTimeout(()=>{
     document.getElementById('splash').classList.add('hide');
     setTimeout(()=>{
       document.getElementById('splash').style.display='none';
-      document.getElementById('onboarding').classList.add('show');
+      const ob = document.getElementById('onboarding');
+      ob.style.display='flex';
+      ob.classList.add('show');
     },600);
   },2400);
 });
