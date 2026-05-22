@@ -1,24 +1,18 @@
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-R701M0TFHP"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-R701M0TFHP');
-</script>
 <!DOCTYPE html>
 
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
 <title>Preppy — Your weekly meal prep, sorted</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
+/* iOS input zoom fix */
+input,textarea,select{font-size:16px !important;}
+@media(min-width:480px){input,textarea,select{font-size:13px !important;}}
 :root{
   --or:#E8845A;--orl:#FDF0EA;--or2:#d06840;
   --ro:#D98A9A;--rol:#FDF0F3;
@@ -26,19 +20,54 @@
   --white:#fff;--green:#2e7d32;--greenl:#e8f5e9;
   --card:#fff;
 }
+html{height:-webkit-fill-available;}
 html,body{height:100%;width:100%;overflow:hidden;}
-body{font-family:'DM Sans',sans-serif;background:#e8ddd4;display:flex;align-items:flex-start;justify-content:center;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#e8ddd4;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  min-height:100vh;
+  min-height:-webkit-fill-available;
+}
 
 /* ── SHELL ── */
-.app{background:var(–bg);width:100%;max-width:430px;height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.app{
+background:var(–bg);
+width:100%;
+max-width:430px;
+height:100vh;
+height:-webkit-fill-available;
+display:flex;
+flex-direction:column;
+position:relative;
+overflow:hidden;
+/* iOS safe area */
+padding-bottom:env(safe-area-inset-bottom);
+}
 @media(min-width:480px){
 body{padding:20px 16px;overflow:auto;align-items:flex-start;}
-.app{height:auto;min-height:760px;border-radius:32px;box-shadow:0 8px 60px rgba(0,0,0,.18);}
+.app{height:auto;min-height:760px;border-radius:32px;box-shadow:0 8px 60px rgba(0,0,0,.18);padding-bottom:0;}
 }
 
 /* ── SPLASH ── */
-#splash{position:fixed;inset:0;background:var(–or);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;transition:opacity .6s ease;}
+#splash{
+position:fixed;
+top:0;left:0;right:0;bottom:0;
+background:var(–or);
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+z-index:200;
+transition:opacity .6s ease;
+}
 #splash.hide{opacity:0;pointer-events:none;}
+/* iOS tap highlight fix */
+*{-webkit-tap-highlight-color:transparent;}
+button,input,textarea{-webkit-appearance:none;appearance:none;}
+input[type=“number”]{-webkit-appearance:none;}
 .splash-logo{margin-bottom:20px;animation:pulse 1.8s ease-in-out infinite;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
 .splash-name{font-family:‘DM Serif Display’,serif;font-size:32px;color:#fff;margin-bottom:40px;letter-spacing:-.5px;}
@@ -47,7 +76,18 @@ body{padding:20px 16px;overflow:auto;align-items:flex-start;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ── ONBOARDING ── */
-#onboarding{position:fixed;inset:0;background:var(–bg);display:none;flex-direction:column;z-index:150;overflow-y:auto;}
+#onboarding{
+position:fixed;
+top:0;left:0;right:0;bottom:0;
+background:var(–bg);
+display:none;
+flex-direction:column;
+z-index:150;
+overflow-y:auto;
+-webkit-overflow-scrolling:touch;
+/* iOS safe area */
+padding-bottom:env(safe-area-inset-bottom);
+}
 #onboarding.show{display:flex;}
 .ob-wrap{flex:1;padding:24px 20px 32px;display:flex;flex-direction:column;}
 .ob-progress{display:flex;gap:6px;margin-bottom:32px;}
@@ -84,15 +124,29 @@ button.ob-skip{padding:10px;background:transparent;color:var(–mu);border:none;
 .tav{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(–or);flex-shrink:0;}
 
 /* ── NAV ── */
-nav{display:flex;background:#fff;border-bottom:1px solid var(–bd);flex-shrink:0;}
+nav{
+display:flex;
+background:#fff;
+border-bottom:1px solid var(–bd);
+flex-shrink:0;
+}
 .nt{flex:1;padding:10px 2px 9px;font-size:10px;text-align:center;color:#bbb;border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s;font-family:‘DM Sans’,sans-serif;font-weight:500;}
 .nt.on{color:var(–or);border-bottom:2.5px solid var(–or);font-weight:700;}
 .nt i{font-size:17px;display:block;margin:0 auto 3px;}
 
 /* ── SCREENS ── */
-.sc{padding:16px;display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.sc{
+padding:16px;
+display:none;
+flex:1;
+overflow-y:auto;
+-webkit-overflow-scrolling:touch;
+overscroll-behavior:contain;
+}
 .sc.on{display:block;}
 #sp-plan.on{display:flex;flex-direction:column;padding:0;}
+/* iOS fix: prevent rubber-band scroll bleeding */
+.sc.on{-webkit-overflow-scrolling:touch;}
 
 /* ── PLAN SCREEN ── */
 .gt{font-family:‘DM Serif Display’,serif;font-size:24px;color:var(–ink);margin-bottom:4px;line-height:1.25;}
@@ -144,13 +198,31 @@ input.mi::placeholder{color:#ccc;}
 input.mi.ai-filled{border-color:#a5d6a7;background:#f8fff8;}
 
 /* GENERATE BUTTON — sticky at bottom */
-.plan-cta{padding:16px 16px max(16px,env(safe-area-inset-bottom));background:var(–bg);border-top:1px solid var(–bd);flex-shrink:0;}
+.plan-cta{
+padding:16px 16px max(16px,env(safe-area-inset-bottom));
+background:var(–bg);
+border-top:1px solid var(–bd);
+flex-shrink:0;
+/* iOS safe area */
+padding-bottom:max(16px,env(safe-area-inset-bottom));
+}
 button.bp{width:100%;padding:16px;background:var(–or);color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:background .15s;}
 button.bp:active{background:var(–or2);}
 button.bs{flex:1;padding:14px 8px;background:var(–rol);color:var(–ro);border:1.5px solid var(–ro);border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:‘DM Sans’,sans-serif;}
 
 /* ── LOADING OVERLAY ── */
-.lo{position:fixed;inset:0;background:rgba(253,246,240,.97);display:none;align-items:center;justify-content:center;z-index:100;flex-direction:column;padding:32px;text-align:center;}
+.lo{
+position:fixed;
+top:0;left:0;right:0;bottom:0;
+background:rgba(253,246,240,.97);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:100;
+flex-direction:column;
+padding:32px;
+text-align:center;
+}
 .lo.on{display:flex;}
 .lo-ring{width:56px;height:56px;border:4px solid #f0e0d4;border-top:4px solid var(–or);border-radius:50%;animation:spin .9s linear infinite;margin-bottom:20px;}
 .lo-title{font-family:‘DM Serif Display’,serif;font-size:22px;color:var(–ink);margin-bottom:6px;}
@@ -163,7 +235,14 @@ button.lob.on{border-color:var(–or);background:var(–orl);color:var(–or);fo
 .lb{height:100%;background:var(–or);border-radius:3px;width:0%;transition:width .5s;}
 
 /* ── CHAT ── */
-.ca{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;min-height:52vh;}
+.ca{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-bottom:14px;
+min-height:45vh;
+flex:1;
+}
 .bu{max-width:82%;padding:11px 14px;border-radius:16px;font-size:13px;line-height:1.55;word-break:break-word;}
 .bu.bot{background:#fff;color:var(–ink);align-self:flex-start;border:1px solid var(–bd);}
 .bu.usr{background:var(–or);color:#fff;align-self:flex-end;}
@@ -372,7 +451,7 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
   <!-- PLAN -->
 
   <div id="sp-plan" class="sc on" style="display:flex;flex-direction:column;padding-bottom:0;">
-    <div style="flex:1;overflow-y:auto;padding:16px 16px 8px;">
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 8px;">
       <div class="gt">Hey there, ready to prep this week? 🥗</div>
       <div class="gs">Choose how you'd like to start</div>
 
