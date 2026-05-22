@@ -1,12 +1,12 @@
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R701M0TFHP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+
   gtag('config', 'G-R701M0TFHP');
 </script>
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -221,6 +221,17 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 /* ── TOAST ── */
 #toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a1a;color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:300;max-width:calc(100vw - 32px);text-align:center;font-family:‘DM Sans’,sans-serif;}
 </style>
+
+<!-- Google Analytics — replace G-XXXXXXXXXX with your Measurement ID -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
 
 </head>
 <body>
@@ -488,7 +499,7 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 // ── RATE LIMIT HANDLER ──
 let requestsRemaining = 10;
 
-async function claudeFetch(body) {
+async function geminiFetch(body) {
   const resp = await fetch('/api/gemini', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -567,6 +578,7 @@ function obNext(n){
 }
 function obDone(){
   document.getElementById('onboarding').classList.remove('show');
+  gtag('event','onboarding_complete');
 }
 
 // ── GOAL ──
@@ -651,7 +663,7 @@ async function analysePhoto(base64,mediaType){
   showAIBar('Reading your meal plan photo...');
   try{
     const goal=document.getElementById('goal-inp').value||'eating healthy';
-    const data=await claudeFetch({
+    const data=await geminiFetch({
         
         max_tokens:1000,
         messages:[{role:'user',content:[
@@ -672,6 +684,7 @@ Use empty string for missing days. Keep meals concise.`}
     });
     showAIBar('✓ Meals extracted from photo!',true);
     sh('Photo scanned successfully ✓');
+    gtag('event','photo_scanned');
   }catch(err){
     showAIBar('Could not read photo — please fill manually.',true);
     console.error(err);
@@ -683,7 +696,7 @@ async function planWithAI(){
   const goal=document.getElementById('goal-inp').value||'healthy balanced Indian meals';
   showAIBar('Planning your week with AI...');
   try{
-    const data=await claudeFetch({
+    const data=await geminiFetch({
         
         max_tokens:800,
         messages:[{role:'user',content:`Create a 7-day Indian meal plan. Goal: ${goal}.
@@ -701,6 +714,7 @@ Keep concise. Realistic Indian meals.`}]
     });
     showAIBar('✓ AI meal plan ready!',true);
     sh('AI meal plan generated ✓');
+    gtag('event','ai_plan_generated');
   }catch(err){
     showAIBar('Something went wrong — try again.',true);
     console.error(err);
@@ -719,7 +733,7 @@ async function generateGrocery(){
   const filled=meals.filter(m=>m.trim());
   if(!filled.length)return false;
   try{
-    const data=await claudeFetch({
+    const data=await geminiFetch({
         
         max_tokens:1200,
         messages:[{role:'user',content:`Generate grocery list from this meal plan:
@@ -786,7 +800,7 @@ async function sendChat(){
   ty.innerHTML='<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
   el.appendChild(ty);el.scrollTop=el.scrollHeight;
   try{
-    const data=await claudeFetch({
+    const data=await geminiFetch({
         
         max_tokens:400,
         system:'You are Preppy, a friendly meal prep and grocery assistant for Indian households. Help with meal planning, recipes, grocery budgets, nutrition, and ingredient swaps. Keep responses short, warm and practical. Use occasional food emojis.',
@@ -815,6 +829,7 @@ function st(tab,el){
   document.getElementById('sp-'+tab).classList.add('on');
   el.classList.add('on');
   if(tab==='nutrition')setTimeout(animateBars,100);
+  gtag('event','tab_view',{tab_name:tab});
 }
 function sti(tab){
   document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
