@@ -8,342 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-/* iOS input zoom fix */
-input,textarea,select{font-size:16px !important;}
-@media(min-width:480px){input,textarea,select{font-size:13px !important;}}
-:root{
-  --or:#D4714E;--orl:#FAF0EB;--or2:#B85D3A;
-  --ro:#C4808F;--rol:#FAF0F2;
-  --ink:#1a1a1a;--mu:#888;--bg:#FAF6F1;--bd:#E8DDD4;
-  --white:#fff;--green:#2e7d32;--greenl:#e8f5e9;
-  --card:#FFFFFF;
-}
-html{height:-webkit-fill-available;}
-html,body{height:100%;width:100%;overflow:hidden;}
-body{
-  font-family:'DM Sans',sans-serif;
-  background:#E8DDD4;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  min-height:100vh;
-  min-height:-webkit-fill-available;
-}
 
-/* ── SHELL ── */
-.app{
-background:var(–bg);
-width:100%;
-max-width:430px;
-height:100vh;
-height:-webkit-fill-available;
-flex-direction:column;
-position:relative;
-overflow:hidden;
-padding-bottom:env(safe-area-inset-bottom);
-}
-@media(min-width:480px){
-body{padding:20px 16px;overflow:auto;align-items:flex-start;}
-.app{height:auto;min-height:760px;border-radius:32px;box-shadow:0 8px 60px rgba(0,0,0,.18);padding-bottom:0;}
-}
-
-/* ── SPLASH ── */
-#splash{
-position:fixed;
-top:0;left:0;right:0;bottom:0;
-width:100%;height:100%;
-background:var(–or);
-flex-direction:column;
-align-items:center;
-justify-content:center;
-z-index:999;
-transition:opacity .5s ease;
-}
-#splash.hiding{opacity:0;}
-/* iOS tap highlight fix */
-*{-webkit-tap-highlight-color:transparent;}
-button{-webkit-appearance:none;appearance:none;background:transparent;border:none;padding:0;margin:0;color:inherit;}
-input,textarea{-webkit-appearance:none;appearance:none;}
-input[type=“number”]{-webkit-appearance:textfield;}
-
-/* ── STATE MACHINE ── */
-/* Default: hide everything */
-#splash{display:none;}
-#onboarding{display:none;}
-.app{display:none;}
-
-/* Show only what matches current state */
-body.state-splash #splash{display:flex;}
-body.state-onboarding #onboarding{display:flex;}
-body.state-app .app{display:flex;}
-.splash-logo{margin-bottom:20px;animation:pulse 1.8s ease-in-out infinite;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
-.splash-name{font-family:‘DM Serif Display’,serif;font-size:32px;color:#fff;margin-bottom:40px;letter-spacing:-.5px;}
-.splash-spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.3);border-top:3px solid #fff;border-radius:50%;animation:spin .9s linear infinite;}
-.splash-ready{font-size:13px;color:rgba(255,255,255,.7);margin-top:12px;letter-spacing:.02em;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* ── ONBOARDING ── */
-#onboarding{
-position:fixed;
-top:0;left:0;right:0;bottom:0;
-width:100%;height:100%;
-background:var(–bg);
-flex-direction:column;
-z-index:180;
-overflow-y:auto;
--webkit-overflow-scrolling:touch;
-padding-bottom:env(safe-area-inset-bottom);
-}
-#onboarding.show{display:flex;}
-.ob-wrap{flex:1;padding:24px 20px 32px;display:flex;flex-direction:column;}
-.ob-progress{display:flex;gap:6px;margin-bottom:32px;}
-.ob-dot{flex:1;height:4px;border-radius:2px;background:#E8DDD4;transition:background .3s;}
-.ob-dot.on{background:var(–or);}
-.ob-step{display:none;flex-direction:column;flex:1;}
-.ob-step.on{display:flex;}
-.ob-step-label{font-size:11px;font-weight:700;color:var(–or);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
-.ob-title{font-family:‘DM Serif Display’,serif;font-size:28px;color:var(–ink);margin-bottom:6px;line-height:1.2;}
-.ob-sub{font-size:14px;color:var(–mu);margin-bottom:28px;line-height:1.5;}
-.ob-opts{display:flex;flex-direction:column;gap:10px;flex:1;}
-button.ob-opt{padding:16px 18px;border:1.5px solid var(–bd);border-radius:14px;background:#fff;font-size:15px;color:var(–ink);cursor:pointer;text-align:left;font-family:‘DM Sans’,sans-serif;transition:all .15s;display:flex;align-items:center;gap:12px;}
-button.ob-opt.on{border-color:var(–or);background:var(–orl);color:var(–or);font-weight:600;}
-.ob-opt-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
-.ob-allergy-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
-.ob-chip{padding:10px 16px;border:1.5px solid var(–bd);border-radius:24px;font-size:13px;color:var(–ink);cursor:pointer;background:#fff;transition:all .15s;font-family:‘DM Sans’,sans-serif;}
-.ob-chip.on{border-color:var(–ro);background:var(–rol);color:var(–ro);font-weight:600;}
-.ob-allergy-input{width:100%;padding:12px 16px;border:1.5px solid var(–bd);border-radius:12px;font-size:14px;background:#fff;color:var(–ink);outline:none;font-family:‘DM Sans’,sans-serif;margin-top:8px;}
-.ob-allergy-input:focus{border-color:var(–or);}
-.ob-goal-inp{width:100%;font-size:15px;padding:12px 14px;border:1.5px solid var(–bd);border-radius:12px;background:#fff;color:var(–ink);outline:none;font-family:‘DM Sans’,sans-serif;resize:none;line-height:1.5;margin-bottom:12px;transition:border-color .15s;}
-.ob-goal-inp:focus{border-color:var(–or);}
-.ob-goal-inp::placeholder{color:#ccc;}
-.ob-goal-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
-.ob-goal-chip{padding:9px 14px;border:1.5px solid var(–bd);border-radius:24px;font-size:13px;color:var(–mu);cursor:pointer;background:#fff;transition:all .15s;font-family:‘DM Sans’,sans-serif;font-weight:500;}
-.ob-goal-chip.on{border-color:var(–or);background:var(–orl);color:var(–or);font-weight:700;}
-.ob-actions{
-margin-top:24px;
-display:flex !important;
-flex-direction:column;
-gap:10px;
-padding-bottom:20px;
-}
-button.ob-next{
-padding:16px !important;
-background:#E8845A !important;
-color:#fff !important;
-border:none !important;
-border-radius:14px !important;
-font-size:16px !important;
-font-weight:700 !important;
-cursor:pointer;
-font-family:‘DM Sans’,sans-serif;
-transition:background .15s;
-width:100%;
-display:block;
-}
-button.ob-next:active{background:#d06840 !important;}
-button.ob-skip{
-padding:10px !important;
-background:transparent !important;
-color:#888 !important;
-border:none !important;
-font-size:13px;
-cursor:pointer;
-font-family:‘DM Sans’,sans-serif;
-width:100%;
-display:block;
-}
-
-/* ── TOPBAR ── */
-.topbar{background:var(–or);padding:14px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.tw{color:#fff;font-family:‘DM Serif Display’,serif;font-size:22px;font-weight:400;flex:1;}
-.tav{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(–or);flex-shrink:0;}
-
-/* ── NAV ── */
-nav{
-display:flex;
-background:#fff;
-border-bottom:1px solid var(–bd);
-flex-shrink:0;
-}
-.nt{flex:1;padding:10px 2px 9px;font-size:10px;text-align:center;color:#bbb;border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s;font-family:‘DM Sans’,sans-serif;font-weight:500;}
-.nt.on{color:var(–or);border-bottom:2.5px solid var(–or);font-weight:700;}
-.nt i{font-size:17px;display:block;margin:0 auto 3px;}
-
-/* ── SCREENS ── */
-.sc{
-padding:16px;
-display:none;
-flex:1;
-overflow-y:auto;
--webkit-overflow-scrolling:touch;
-overscroll-behavior:contain;
-}
-.sc.on{display:block;}
-#sp-plan.on{
-display:flex !important;
-flex-direction:column;
-padding:0;
-}
-
-/* ── PLAN SCREEN ── */
-.gt{font-family:‘DM Serif Display’,serif;font-size:24px;color:var(–ink);margin-bottom:4px;line-height:1.25;}
-.gs{font-size:14px;color:var(–mu);margin-bottom:20px;}
-
-/* GOAL BOX */
-.goal-box{background:var(–card);border-radius:16px;padding:14px 16px;margin-bottom:16px;border:1px solid var(–bd);}
-.goal-label{font-size:11px;font-weight:700;color:var(–or);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
-textarea.goal-inp{width:100%;font-size:14px;padding:10px 12px;border:1.5px solid var(–bd);border-radius:10px;background:#fafaf8;color:var(–ink);outline:none;font-family:‘DM Sans’,sans-serif;resize:none;line-height:1.4;transition:border-color .15s;}
-textarea.goal-inp:focus{border-color:var(–or);}
-textarea.goal-inp::placeholder{color:#ccc;}
-.goal-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-.goal-chip{padding:7px 12px;border:1.5px solid var(–bd);border-radius:20px;font-size:12px;color:var(–mu);cursor:pointer;background:#fff;transition:all .15s;font-family:‘DM Sans’,sans-serif;font-weight:500;}
-.goal-chip.on{border-color:var(–or);background:var(–orl);color:var(–or);font-weight:700;}
-
-/* AI STATUS */
-.ai-bar{display:none;align-items:center;gap:10px;padding:11px 14px;background:var(–orl);border-radius:12px;margin-bottom:12px;font-size:13px;color:var(–or);font-weight:600;border:1px solid #f0d8c8;}
-.ai-bar.show{display:flex;}
-.ai-spin{width:16px;height:16px;border:2px solid #f0d8c8;border-top:2px solid var(–or);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;}
-
-/* OPTION CARDS — Lovable style */
-.option-card{background:var(–card);border-radius:16px;margin-bottom:12px;border:1px solid var(–bd);overflow:hidden;}
-.option-row{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;border-bottom:1px solid var(–bd);transition:background .15s;position:relative;}
-.option-row:last-child{border-bottom:none;}
-.option-row:active{background:var(–orl);}
-.option-icon{width:38px;height:38px;border-radius:50%;background:var(–orl);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;color:var(–or);}
-.option-text{flex:1;}
-.option-title{font-size:15px;font-weight:600;color:var(–ink);margin-bottom:2px;}
-.option-sub{font-size:12px;color:var(–mu);}
-.option-arrow{color:#ccc;font-size:16px;}
-#file-inp{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-
-/* PHOTO PREVIEW */
-.photo-preview-wrap{background:#fff;border-radius:16px;border:1px solid var(–bd);overflow:hidden;margin-bottom:12px;display:none;}
-#photo-preview{width:100%;max-height:200px;object-fit:cover;display:block;}
-.photo-preview-label{padding:10px 16px;font-size:12px;color:var(–mu);display:flex;align-items:center;justify-content:space-between;}
-.photo-retake{font-size:12px;color:var(–or);cursor:pointer;font-weight:600;border:none;background:none;font-family:‘DM Sans’,sans-serif;}
-
-/* MEAL FORM — shown when enter manually is tapped */
-.fs{background:var(–card);border-radius:16px;padding:14px 16px;margin-bottom:14px;border:1px solid var(–bd);display:none;}
-.fs.show{display:block;}
-.ft{font-size:14px;font-weight:700;color:var(–ink);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
-.ft-ai{font-size:12px;color:var(–or);font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;padding:5px 10px;background:var(–orl);border-radius:20px;border:none;font-family:‘DM Sans’,sans-serif;}
-.dr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.dl{font-size:11px;font-weight:700;color:var(–or);width:30px;flex-shrink:0;}
-input.mi{flex:1;min-width:0;font-size:13px;padding:9px 12px;border:1.5px solid var(–bd);border-radius:10px;background:#fff;color:var(–ink);outline:none;font-family:‘DM Sans’,sans-serif;transition:border-color .15s;}
-input.mi:focus{border-color:var(–or);}
-input.mi::placeholder{color:#ccc;}
-input.mi.ai-filled{border-color:#a5d6a7;background:#f8fff8;}
-
-/* GENERATE BUTTON — sticky at bottom */
-.plan-cta{
-padding:16px 16px max(16px,env(safe-area-inset-bottom));
-background:var(–bg);
-border-top:1px solid var(–bd);
-flex-shrink:0;
-/* iOS safe area */
-padding-bottom:max(16px,env(safe-area-inset-bottom));
-}
-button.bp{width:100%;padding:16px;background:var(–or);color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:background .15s;}
-button.bp:active{background:var(–or2);}
-button.bs{flex:1;padding:14px 8px;background:var(–rol);color:var(–ro);border:1.5px solid var(–ro);border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;font-family:‘DM Sans’,sans-serif;}
-
-/* ── LOADING OVERLAY ── */
-.lo{
-position:fixed;
-top:0;left:0;right:0;bottom:0;
-width:100%;
-height:100%;
-background:rgba(253,246,240,.97);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:170;
-flex-direction:column;
-padding:32px;
-text-align:center;
-}
-.lo.on{display:flex;}
-.lo-ring{width:56px;height:56px;border:4px solid #f0e0d4;border-top:4px solid var(–or);border-radius:50%;animation:spin .9s linear infinite;margin-bottom:20px;}
-.lo-title{font-family:‘DM Serif Display’,serif;font-size:22px;color:var(–ink);margin-bottom:6px;}
-.lo-sub{font-size:13px;color:var(–mu);margin-bottom:28px;}
-.lq{font-size:15px;font-weight:600;color:var(–ink);margin-bottom:18px;max-width:300px;line-height:1.4;}
-.lop{display:flex;flex-direction:column;gap:8px;width:100%;max-width:360px;}
-button.lob{padding:12px 14px;border:1.5px solid var(–bd);border-radius:12px;background:#fff;font-size:13px;color:var(–ink);cursor:pointer;text-align:left;font-family:‘DM Sans’,sans-serif;transition:all .15s;}
-button.lob.on{border-color:var(–or);background:var(–orl);color:var(–or);font-weight:700;}
-.lbw{width:100%;max-width:360px;height:5px;background:#ecddd4;border-radius:3px;margin-top:24px;overflow:hidden;}
-.lb{height:100%;background:var(–or);border-radius:3px;width:0%;transition:width .5s;}
-
-/* ── CHAT ── */
-.ca{
-display:flex;
-flex-direction:column;
-gap:10px;
-margin-bottom:14px;
-min-height:45vh;
-flex:1;
-}
-.bu{max-width:82%;padding:11px 14px;border-radius:16px;font-size:13px;line-height:1.55;word-break:break-word;}
-.bu.bot{background:#fff;color:var(–ink);align-self:flex-start;border:1px solid var(–bd);}
-.bu.usr{background:var(–or);color:#fff;align-self:flex-end;}
-.bu.typ{background:#fff;border:1px solid var(–bd);align-self:flex-start;padding:13px 16px;}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(–or);margin:0 2px;animation:bo .9s infinite;}
-.dot:nth-child(2){animation-delay:.15s;}.dot:nth-child(3){animation-delay:.3s;}
-@keyframes bo{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}
-.cr{display:flex;gap:8px;align-items:center;}
-input.ci{flex:1;min-width:0;padding:11px 16px;border:1.5px solid var(–bd);border-radius:24px;font-size:13px;background:#fff;color:var(–ink);outline:none;font-family:‘DM Sans’,sans-serif;transition:border-color .15s;}
-input.ci:focus{border-color:var(–or);}
-button.cs{width:42px;height:42px;flex-shrink:0;background:var(–or);border:none;border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;}
-button.cs:active{background:var(–or2);}
-
-/* ── GROCERY ── */
-.gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;}
-.gtt{font-family:‘DM Serif Display’,serif;font-size:20px;color:var(–ink);}
-.exp-row{display:flex;gap:6px;}
-button.ew,button.ec{padding:7px 11px;border-radius:8px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:‘DM Sans’,sans-serif;font-weight:600;border:1px solid;}
-button.ew{background:var(–greenl);color:var(–green);border-color:#a5d6a7;}
-button.ec{background:var(–rol);color:var(–ro);border-color:var(–ro);}
-.cat-block{background:#fff;border-radius:16px;margin-bottom:12px;overflow:hidden;border:1px solid var(–bd);}
-.cat-head{padding:12px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f5efe8;}
-.cat-name{font-size:14px;font-weight:700;color:var(–or);flex:1;}
-.cat-count{font-size:11px;color:#bbb;font-weight:500;}
-.item-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:.5px solid #faf5f0;}
-.item-row:last-child{border-bottom:none;}
-.item-chk{width:20px;height:20px;flex-shrink:0;border:1.5px solid var(–bd);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-.item-chk.on{background:var(–or);border-color:var(–or);}
-.item-name{flex:1;font-size:13px;color:var(–ink);}
-.item-name.dn{text-decoration:line-through;color:#bbb;}
-.qty-wrap{display:flex;align-items:center;gap:4px;flex-shrink:0;}
-input.qty-num{width:46px;padding:5px 6px;border:1.5px solid var(–bd);border-radius:8px;font-size:12px;text-align:center;font-family:‘DM Sans’,sans-serif;color:var(–ink);background:#fff;outline:none;}
-input.qty-num:focus{border-color:var(–or);}
-.qty-unit{font-size:11px;color:#aaa;padding:5px 8px;background:#f5efe8;border-radius:8px;font-weight:500;min-width:32px;text-align:center;}
-.exp-full-row{display:flex;gap:8px;margin-top:14px;}
-button.ef{flex:1;padding:13px;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:6px;font-family:‘DM Sans’,sans-serif;}
-button.ef.wa{background:var(–greenl);color:var(–green);}
-button.ef.cp{background:var(–rol);color:var(–ro);}
-
-/* ── NUTRITION ── */
-.nc{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid var(–bd);}
-.nt2{font-family:‘DM Serif Display’,serif;font-size:18px;color:var(–ink);margin-bottom:4px;}
-.nt2-sub{font-size:12px;color:var(–mu);margin-bottom:16px;}
-.nr{margin-bottom:14px;}
-.nr-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
-.nr-label{font-size:13px;color:var(–ink);font-weight:500;}
-.nr-val{font-size:12px;color:var(–mu);}
-.nb{width:100%;height:10px;background:#f0e8e0;border-radius:6px;overflow:hidden;}
-.nf{height:100%;border-radius:6px;transition:width 1s ease;}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
-.chip{padding:7px 13px;border-radius:20px;font-size:12px;font-weight:600;}
-.cg{background:var(–greenl);color:var(–green);}
-.co{background:var(–orl);color:var(–or);}
-
-/* ── TOAST ── */
-#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a1a;color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:300;max-width:calc(100vw - 32px);text-align:center;font-family:‘DM Sans’,sans-serif;}
-</style>
-
-<!-- Google Analytics — replace G-XXXXXXXXXX with your Measurement ID -->
+<!-- Google Analytics — replace G-XXXXXXXXXX with your ID -->
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 
@@ -353,6 +19,223 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
   gtag('js', new Date());
   gtag('config', 'G-XXXXXXXXXX');
 </script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+input,textarea,select{font-size:16px;}
+@media(min-width:480px){input,textarea,select{font-size:14px;}}
+
+:root{
+  --or:#D4714E;
+  --orl:#FAF0EB;
+  --or2:#B85D3A;
+  --ro:#C4808F;
+  --rol:#FAF0F2;
+  --ink:#2a2a2a;
+  --mu:#8a8580;
+  --bg:#FAF6F1;
+  --bd:#E8DDD4;
+  --card:#FFFFFF;
+  --green:#4a7c59;
+  --greenl:#eef4ef;
+}
+html{height:-webkit-fill-available;}
+html,body{height:100%;width:100%;overflow:hidden;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#E8DDD4;
+  display:flex;align-items:flex-start;justify-content:center;
+  min-height:100vh;min-height:-webkit-fill-available;
+}
+
+/* ── STATE MACHINE ── */
+#splash,#onboarding,.app{display:none;}
+body.state-splash #splash{display:flex;}
+body.state-onboarding #onboarding{display:flex;}
+body.state-app .app{display:flex;}
+
+/* ── SHELL ── */
+.app{
+  background:var(--bg);width:100%;max-width:430px;
+  height:100vh;height:-webkit-fill-available;
+  flex-direction:column;position:relative;overflow:hidden;
+}
+@media(min-width:480px){
+  body{padding:20px 16px;overflow:auto;}
+  .app{height:auto;min-height:760px;border-radius:32px;box-shadow:0 8px 60px rgba(0,0,0,.18);}
+}
+
+/* ── SPLASH ── */
+#splash{
+  position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
+  background:var(--or);flex-direction:column;align-items:center;justify-content:center;
+  z-index:999;transition:opacity .5s ease;
+}
+#splash.hiding{opacity:0;}
+.splash-logo{margin-bottom:20px;animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+.splash-name{font-family:'DM Serif Display',serif;font-size:34px;color:#fff;margin-bottom:40px;}
+.splash-spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.3);border-top:3px solid #fff;border-radius:50%;animation:spin .9s linear infinite;}
+.splash-ready{font-size:13px;color:rgba(255,255,255,.75);margin-top:14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── ONBOARDING ── */
+#onboarding{
+  position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
+  background:var(--bg);flex-direction:column;z-index:180;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.ob-wrap{flex:1;padding:28px 22px 32px;display:flex;flex-direction:column;max-width:430px;margin:0 auto;width:100%;}
+.ob-progress{display:flex;gap:6px;margin-bottom:32px;}
+.ob-dot{flex:1;height:4px;border-radius:2px;background:var(--bd);transition:background .3s;}
+.ob-dot.on{background:var(--or);}
+.ob-step{display:none;flex-direction:column;flex:1;}
+.ob-step.on{display:flex;}
+.ob-label{font-size:11px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.ob-title{font-family:'DM Serif Display',serif;font-size:30px;color:var(--ink);margin-bottom:8px;line-height:1.15;}
+.ob-sub{font-size:14px;color:var(--mu);margin-bottom:22px;line-height:1.5;}
+.ob-goal-inp{width:100%;font-size:15px;padding:14px;border:1.5px solid var(--bd);border-radius:14px;background:#fff;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;resize:none;line-height:1.5;margin-bottom:14px;}
+.ob-goal-inp:focus{border-color:var(--or);}
+.ob-goal-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.ob-goal-chip{padding:10px 15px;border:1.5px solid var(--bd);border-radius:24px;font-size:13px;color:var(--mu);cursor:pointer;background:#fff;transition:all .15s;}
+.ob-goal-chip.on{border-color:var(--or);background:var(--orl);color:var(--or);font-weight:700;}
+.ob-opts{display:flex;flex-direction:column;gap:10px;}
+.ob-opt{padding:16px 18px;border:1.5px solid var(--bd);border-radius:14px;background:#fff;font-size:15px;color:var(--ink);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;gap:12px;}
+.ob-opt.on{border-color:var(--or);background:var(--orl);color:var(--or);font-weight:700;}
+.ob-opt-icon{font-size:20px;width:28px;text-align:center;}
+.ob-allergy-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.ob-chip{padding:10px 16px;border:1.5px solid var(--bd);border-radius:24px;font-size:13px;color:var(--ink);cursor:pointer;background:#fff;transition:all .15s;}
+.ob-chip.on{border-color:var(--ro);background:var(--rol);color:var(--ro);font-weight:700;}
+.ob-allergy-input{width:100%;padding:13px 16px;border:1.5px solid var(--bd);border-radius:14px;font-size:14px;background:#fff;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;}
+.ob-allergy-input:focus{border-color:var(--or);}
+.ob-actions{margin-top:24px;display:flex;flex-direction:column;gap:10px;padding-bottom:20px;}
+.ob-next{padding:16px;background:var(--or);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:background .15s;}
+.ob-next:active{background:var(--or2);}
+.ob-skip{padding:10px;background:transparent;color:var(--mu);border:none;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--or);padding:14px 18px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.tw{color:#fff;font-family:'DM Serif Display',serif;font-size:22px;flex:1;}
+.tav{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--or);}
+#usage-badge{display:none;font-size:11px;color:#fff;background:var(--or2);padding:6px 16px;text-align:center;}
+
+/* ── NAV ── */
+nav{display:flex;background:#fff;border-bottom:1px solid var(--bd);flex-shrink:0;}
+.nt{flex:1;padding:10px 2px 9px;font-size:10px;text-align:center;color:#bbb;border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;font-family:'DM Sans',sans-serif;font-weight:500;}
+.nt.on{color:var(--or);border-bottom:2.5px solid var(--or);font-weight:700;}
+.nt i{font-size:17px;display:block;margin:0 auto 3px;}
+
+/* ── SCREENS ── */
+.sc{padding:16px;display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.sc.on{display:block;}
+#sp-plan.on{display:flex;flex-direction:column;padding:0;}
+
+/* PLAN */
+.plan-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 8px;}
+.gt{font-family:'DM Serif Display',serif;font-size:24px;color:var(--ink);margin-bottom:4px;line-height:1.25;}
+.gs{font-size:14px;color:var(--mu);margin-bottom:20px;}
+.ai-bar{display:none;align-items:center;gap:10px;padding:11px 14px;background:var(--orl);border-radius:12px;margin-bottom:12px;font-size:13px;color:var(--or);font-weight:600;border:1px solid #f0d8c8;}
+.ai-bar.show{display:flex;}
+.ai-spin{width:16px;height:16px;border:2px solid #f0d8c8;border-top:2px solid var(--or);border-radius:50%;animation:spin .8s linear infinite;}
+.option-card{background:var(--card);border-radius:16px;margin-bottom:12px;border:1px solid var(--bd);overflow:hidden;}
+.option-row{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .15s;}
+.option-row:last-child{border-bottom:none;}
+.option-row:active{background:var(--orl);}
+.option-icon{width:40px;height:40px;border-radius:50%;background:var(--orl);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--or);}
+.option-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:2px;}
+.option-sub{font-size:12px;color:var(--mu);}
+.option-arrow{color:#ccc;font-size:16px;margin-left:auto;}
+.photo-preview-wrap{background:#fff;border-radius:16px;border:1px solid var(--bd);overflow:hidden;margin-bottom:12px;display:none;}
+#photo-preview{width:100%;max-height:200px;object-fit:cover;display:block;}
+.photo-label{padding:10px 16px;font-size:12px;color:var(--mu);display:flex;align-items:center;justify-content:space-between;}
+.photo-retake{font-size:12px;color:var(--or);cursor:pointer;font-weight:600;border:none;background:none;font-family:'DM Sans',sans-serif;}
+.fs{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:14px;border:1px solid var(--bd);display:none;}
+.fs.show{display:block;}
+.ft{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.ft-ai{font-size:12px;color:var(--or);font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;padding:5px 10px;background:var(--orl);border-radius:20px;border:none;font-family:'DM Sans',sans-serif;}
+.dr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.dl{font-size:11px;font-weight:700;color:var(--or);width:30px;}
+.mi{flex:1;min-width:0;font-size:13px;padding:9px 12px;border:1.5px solid var(--bd);border-radius:10px;background:#fff;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;}
+.mi:focus{border-color:var(--or);}
+.mi.ai-filled{border-color:#a5d6a7;background:#f8fff8;}
+.plan-cta{padding:16px 16px max(16px,env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--bd);flex-shrink:0;}
+.bp{width:100%;padding:16px;background:var(--or);color:#fff;border:none;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;}
+.bp:active{background:var(--or2);}
+
+/* ── LOADING ── */
+.lo{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100%;background:rgba(250,246,241,.97);display:none;align-items:center;justify-content:center;z-index:170;flex-direction:column;padding:32px;text-align:center;}
+.lo.on{display:flex;}
+.lo-ring{width:56px;height:56px;border:4px solid #f0e0d4;border-top:4px solid var(--or);border-radius:50%;animation:spin .9s linear infinite;margin-bottom:20px;}
+.lo-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--ink);margin-bottom:6px;}
+.lo-sub{font-size:13px;color:var(--mu);margin-bottom:28px;}
+.lq{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:18px;max-width:300px;line-height:1.4;}
+.lop{display:flex;flex-direction:column;gap:8px;width:100%;max-width:360px;}
+.lob{padding:12px 14px;border:1.5px solid var(--bd);border-radius:12px;background:#fff;font-size:13px;color:var(--ink);cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;}
+.lob.on{border-color:var(--or);background:var(--orl);color:var(--or);font-weight:700;}
+.lbw{width:100%;max-width:360px;height:5px;background:#ecddd4;border-radius:3px;margin-top:24px;overflow:hidden;}
+.lb{height:100%;background:var(--or);border-radius:3px;width:0%;transition:width .5s;}
+
+/* ── GROCERY ── */
+.gh{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;}
+.gtt{font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);}
+.exp-row{display:flex;gap:6px;}
+.ew,.ec{padding:7px 11px;border-radius:8px;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;font-weight:600;border:1px solid;}
+.ew{background:var(--greenl);color:var(--green);border-color:#b5d4bd;}
+.ec{background:var(--rol);color:var(--ro);border-color:var(--ro);}
+.cat-block{background:#fff;border-radius:16px;margin-bottom:12px;overflow:hidden;border:1px solid var(--bd);}
+.cat-head{padding:12px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f5efe8;}
+.cat-name{font-size:14px;font-weight:700;color:var(--or);flex:1;}
+.cat-count{font-size:11px;color:#bbb;font-weight:500;}
+.item-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:.5px solid #faf5f0;}
+.item-row:last-child{border-bottom:none;}
+.item-chk{width:20px;height:20px;border:1.5px solid var(--bd);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.item-chk.on{background:var(--or);border-color:var(--or);}
+.item-name{flex:1;font-size:13px;color:var(--ink);}
+.item-name.dn{text-decoration:line-through;color:#bbb;}
+.qty-wrap{display:flex;align-items:center;gap:4px;}
+.qty-num{width:46px;padding:5px 6px;border:1.5px solid var(--bd);border-radius:8px;font-size:12px;text-align:center;font-family:'DM Sans',sans-serif;color:var(--ink);background:#fff;outline:none;}
+.qty-num:focus{border-color:var(--or);}
+.qty-unit{font-size:11px;color:#aaa;padding:5px 8px;background:#f5efe8;border-radius:8px;font-weight:500;min-width:32px;text-align:center;}
+.exp-full-row{display:flex;gap:8px;margin-top:14px;}
+.ef{flex:1;padding:13px;border-radius:14px;font-size:13px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'DM Sans',sans-serif;}
+.ef.wa{background:var(--greenl);color:var(--green);}
+.ef.cp{background:var(--rol);color:var(--ro);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--mu);}
+.empty-state i{font-size:40px;color:var(--bd);margin-bottom:12px;display:block;}
+
+/* ── CHAT ── */
+.ca{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;min-height:48vh;}
+.bu{max-width:82%;padding:11px 14px;border-radius:16px;font-size:13px;line-height:1.55;word-break:break-word;}
+.bu.bot{background:#fff;color:var(--ink);align-self:flex-start;border:1px solid var(--bd);}
+.bu.usr{background:var(--or);color:#fff;align-self:flex-end;}
+.bu.typ{background:#fff;border:1px solid var(--bd);align-self:flex-start;padding:13px 16px;}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--or);margin:0 2px;animation:bo .9s infinite;}
+.dot:nth-child(2){animation-delay:.15s;}.dot:nth-child(3){animation-delay:.3s;}
+@keyframes bo{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}
+.cr{display:flex;gap:8px;align-items:center;}
+.ci{flex:1;min-width:0;padding:11px 16px;border:1.5px solid var(--bd);border-radius:24px;font-size:13px;background:#fff;color:var(--ink);outline:none;font-family:'DM Sans',sans-serif;}
+.ci:focus{border-color:var(--or);}
+.cs{width:42px;height:42px;flex-shrink:0;background:var(--or);border:none;border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.cs:active{background:var(--or2);}
+
+/* ── NUTRITION ── */
+.nc{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;border:1px solid var(--bd);}
+.nt2{font-family:'DM Serif Display',serif;font-size:18px;color:var(--ink);margin-bottom:4px;}
+.nt2-sub{font-size:12px;color:var(--mu);margin-bottom:16px;}
+.nr{margin-bottom:14px;}
+.nr-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;}
+.nr-label{font-size:13px;color:var(--ink);font-weight:500;}
+.nr-val{font-size:12px;color:var(--mu);}
+.nb{width:100%;height:10px;background:#f0e8e0;border-radius:6px;overflow:hidden;}
+.nf{height:100%;border-radius:6px;transition:width 1s ease;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.chip{padding:7px 13px;border-radius:20px;font-size:12px;font-weight:600;}
+.cg{background:var(--greenl);color:var(--green);}
+.co{background:var(--orl);color:var(--or);}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:11px 22px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:300;max-width:calc(100vw - 32px);text-align:center;font-family:'DM Sans',sans-serif;}
+</style>
 
 </head>
 <body class="state-splash">
@@ -378,24 +261,22 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 <div id="onboarding">
   <div class="ob-wrap">
     <div class="ob-progress">
-      <div class="ob-dot on" id="p1"></div>
-      <div class="ob-dot" id="p2"></div>
-      <div class="ob-dot" id="p3"></div>
-      <div class="ob-dot" id="p4"></div>
+      <div class="ob-dot on" id="p1"></div><div class="ob-dot" id="p2"></div>
+      <div class="ob-dot" id="p3"></div><div class="ob-dot" id="p4"></div>
     </div>
 
 ```
 <div class="ob-step on" id="ob1">
-  <div class="ob-step-label">Step 1 of 4</div>
+  <div class="ob-label">Step 1 of 4</div>
   <div class="ob-title">What's your goal?</div>
-  <div class="ob-sub">Tell us what you're working towards — we'll tailor your meal plan and grocery list around it.</div>
+  <div class="ob-sub">Tell us what you're working towards — we'll tailor everything around it.</div>
   <textarea class="ob-goal-inp" id="goal-inp" rows="2" placeholder="e.g. Lose 2kg by end of June, eat more protein..."></textarea>
   <div class="ob-goal-chips">
     <span class="ob-goal-chip" onclick="setGoal(this,'Lose weight — high protein, low carb meals')">🔥 Lose weight</span>
-    <span class="ob-goal-chip" onclick="setGoal(this,'Build muscle — high protein, calorie surplus')">💪 Build muscle</span>
-    <span class="ob-goal-chip" onclick="setGoal(this,'Eat clean — balanced, wholesome Indian meals')">🥗 Eat clean</span>
+    <span class="ob-goal-chip" onclick="setGoal(this,'Build muscle — high protein meals')">💪 Build muscle</span>
+    <span class="ob-goal-chip" onclick="setGoal(this,'Eat clean — balanced wholesome meals')">🥗 Eat clean</span>
     <span class="ob-goal-chip" onclick="setGoal(this,'Family meals — nutritious for all ages')">👨‍👩‍👧 Family</span>
-    <span class="ob-goal-chip" onclick="setGoal(this,'Budget meals — under ₹3000 for the week')">💰 Budget</span>
+    <span class="ob-goal-chip" onclick="setGoal(this,'Budget meals — under ₹3000 a week')">💰 Budget</span>
   </div>
   <div class="ob-actions">
     <button class="ob-next" onclick="obNext(2)">Next →</button>
@@ -404,9 +285,9 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 </div>
 
 <div class="ob-step" id="ob2">
-  <div class="ob-step-label">Step 2 of 4</div>
+  <div class="ob-label">Step 2 of 4</div>
   <div class="ob-title">Dietary preferences?</div>
-  <div class="ob-sub">So we only suggest meals and groceries that work for you.</div>
+  <div class="ob-sub">So we only suggest what works for you.</div>
   <div class="ob-opts">
     <button class="ob-opt" onclick="obSel(this,'ob2')"><span class="ob-opt-icon">🍽️</span>No restrictions</button>
     <button class="ob-opt" onclick="obSel(this,'ob2')"><span class="ob-opt-icon">🥦</span>Vegetarian</button>
@@ -420,9 +301,9 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 </div>
 
 <div class="ob-step" id="ob3">
-  <div class="ob-step-label">Step 3 of 4</div>
+  <div class="ob-label">Step 3 of 4</div>
   <div class="ob-title">How many people?</div>
-  <div class="ob-sub">We'll calculate the right quantities for your grocery list.</div>
+  <div class="ob-sub">We'll calculate the right quantities for your list.</div>
   <div class="ob-opts">
     <button class="ob-opt" onclick="obSel(this,'ob3')"><span class="ob-opt-icon">🧑</span>Just me</button>
     <button class="ob-opt" onclick="obSel(this,'ob3')"><span class="ob-opt-icon">👫</span>2 people</button>
@@ -436,9 +317,9 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 </div>
 
 <div class="ob-step" id="ob4">
-  <div class="ob-step-label">Step 4 of 4</div>
+  <div class="ob-label">Step 4 of 4</div>
   <div class="ob-title">Any allergies?</div>
-  <div class="ob-sub">Tap all that apply — we'll filter your grocery list automatically.</div>
+  <div class="ob-sub">Tap all that apply — we'll filter your list automatically.</div>
   <div class="ob-allergy-row">
     <span class="ob-chip" onclick="this.classList.toggle('on')">🥜 Nuts</span>
     <span class="ob-chip" onclick="this.classList.toggle('on')">🥛 Dairy</span>
@@ -448,7 +329,7 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
     <span class="ob-chip" onclick="this.classList.toggle('on')">🦐 Shellfish</span>
     <span class="ob-chip" onclick="this.classList.toggle('on')">✅ None</span>
   </div>
-  <input class="ob-allergy-input" placeholder="Or type any other allergies, separated by commas..."/>
+  <input class="ob-allergy-input" placeholder="Or type other allergies, separated by commas..."/>
   <div class="ob-actions" style="margin-top:auto;">
     <button class="ob-next" onclick="obDone()">Let's go! 🎉</button>
   </div>
@@ -473,7 +354,7 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 
 <div class="app">
   <div class="topbar">
-    <svg width="26" height="26" viewBox="0 0 64 64" fill="none" style="flex-shrink:0">
+    <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
       <circle cx="32" cy="32" r="26" stroke="white" stroke-width="2.5" fill="none"/>
       <circle cx="32" cy="32" r="18" stroke="white" stroke-width="2" fill="none" opacity=".6"/>
       <path d="M22 32 Q27 24 32 32 Q37 40 42 32" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
@@ -481,7 +362,7 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
     <span class="tw">Preppy</span>
     <div class="tav">S</div>
   </div>
-  <div id="usage-badge" style="display:none;font-size:11px;color:#fff;background:rgba(180,60,20,.85);padding:5px 16px;text-align:center;font-family:'DM Sans',sans-serif;">⚠️ Only <span id="badge-count">3</span> AI requests left today</div>
+  <div id="usage-badge">⚠️ Only <span id="badge-count">3</span> AI requests left today</div>
 
   <nav>
     <button class="nt on" onclick="st('plan',this)"><i class="ti ti-calendar-week"></i>Plan</button>
@@ -492,82 +373,39 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
 
   <!-- PLAN -->
 
-  <div id="sp-plan" class="sc on" style="display:flex;flex-direction:column;padding-bottom:0;">
-    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 8px;">
+  <div id="sp-plan" class="sc on">
+    <div class="plan-scroll">
       <div class="gt">Hey there, ready to prep this week? 🥗</div>
       <div class="gs">Choose how you'd like to start</div>
-
-```
-  <!-- AI STATUS BAR -->
-  <div class="ai-bar" id="ai-bar">
-    <div class="ai-spin"></div>
-    <span id="ai-bar-text">Analysing your meal plan...</span>
-  </div>
-
-  <!-- PHOTO PREVIEW -->
-  <div class="photo-preview-wrap" id="photo-preview-wrap">
-    <img id="photo-preview" alt="Preview"/>
-    <div class="photo-preview-label">
-      <span>Meal plan photo uploaded</span>
-      <button class="photo-retake" onclick="retakePhoto()">Retake</button>
-    </div>
-  </div>
-
-  <!-- THREE OPTIONS CARD — Lovable style -->
-  <div class="option-card">
-    <div class="option-row" onclick="triggerUpload()">
-      <input type="file" id="file-inp" accept="image/*" onchange="handlePhoto(event)" style="display:none"/>
-      <div class="option-icon"><i class="ti ti-camera"></i></div>
-      <div class="option-text">
-        <div class="option-title">Upload a photo</div>
-        <div class="option-sub">Snap or upload your meal plan</div>
+      <div class="ai-bar" id="ai-bar"><div class="ai-spin"></div><span id="ai-bar-text">Working...</span></div>
+      <div class="photo-preview-wrap" id="photo-preview-wrap">
+        <img id="photo-preview" alt="Preview"/>
+        <div class="photo-label"><span>Photo uploaded ✓</span><button class="photo-retake" onclick="retakePhoto()">Retake</button></div>
       </div>
-      <i class="ti ti-chevron-right option-arrow"></i>
-    </div>
-    <div class="option-row" onclick="showManual()">
-      <div class="option-icon"><i class="ti ti-pencil"></i></div>
-      <div class="option-text">
-        <div class="option-title">Enter manually</div>
-        <div class="option-sub">Type in each day's meals</div>
+      <div class="option-card">
+        <div class="option-row" onclick="triggerUpload()">
+          <input type="file" id="file-inp" accept="image/*" onchange="handlePhoto(event)" style="display:none"/>
+          <div class="option-icon"><i class="ti ti-camera"></i></div>
+          <div><div class="option-title">Upload a photo</div><div class="option-sub">Snap or upload your meal plan</div></div>
+          <i class="ti ti-chevron-right option-arrow"></i>
+        </div>
+        <div class="option-row" onclick="showManual()">
+          <div class="option-icon"><i class="ti ti-pencil"></i></div>
+          <div><div class="option-title">Enter manually</div><div class="option-sub">Type in each day's meals</div></div>
+          <i class="ti ti-chevron-right option-arrow"></i>
+        </div>
+        <div class="option-row" onclick="planWithAI()">
+          <div class="option-icon"><i class="ti ti-sparkles"></i></div>
+          <div><div class="option-title">Make a plan with AI</div><div class="option-sub">Let Preppy build your week</div></div>
+          <i class="ti ti-chevron-right option-arrow"></i>
+        </div>
       </div>
-      <i class="ti ti-chevron-right option-arrow"></i>
-    </div>
-    <div class="option-row" onclick="planWithAI()">
-      <div class="option-icon"><i class="ti ti-sparkles"></i></div>
-      <div class="option-text">
-        <div class="option-title">Make a plan with AI</div>
-        <div class="option-sub">Let Preppy build your week</div>
+      <div class="fs" id="manual-form">
+        <div class="ft">This week's meals<button class="ft-ai" onclick="planWithAI()"><i class="ti ti-sparkles" style="font-size:13px"></i>Fill with AI</button></div>
+        <div id="mf"></div>
       </div>
-      <i class="ti ti-chevron-right option-arrow"></i>
     </div>
-  </div>
-
-  <!-- MANUAL FORM (hidden by default) -->
-  <div class="fs" id="manual-form">
-    <div class="ft">
-      This week's meals
-      <button class="ft-ai" onclick="planWithAI()"><i class="ti ti-sparkles" style="font-size:13px"></i>Fill with AI</button>
-    </div>
-    <div id="mf"></div>
-  </div>
-</div>
-
-<!-- STICKY CTA -->
-<div class="plan-cta">
-  <button class="bp" onclick="sl()">Generate grocery list</button>
-</div>
-```
-
-  </div>
-
-  <!-- CHAT -->
-
-  <div id="sp-chat" class="sc">
-    <div class="ca" id="ca"></div>
-    <div class="cr">
-      <input class="ci" id="ci" placeholder="Ask about recipes, swaps, budget..." onkeydown="if(event.key==='Enter')sendChat()"/>
-      <button class="cs" onclick="sendChat()"><i class="ti ti-send"></i></button>
-    </div>
+    <div class="plan-cta"><button class="bp" onclick="sl()">Generate grocery list</button></div>
   </div>
 
   <!-- GROCERY -->
@@ -587,6 +425,16 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
     </div>
   </div>
 
+  <!-- CHAT -->
+
+  <div id="sp-chat" class="sc">
+    <div class="ca" id="ca"></div>
+    <div class="cr">
+      <input class="ci" id="ci" placeholder="Ask about recipes, swaps, budget..." onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="cs" onclick="sendChat()"><i class="ti ti-send"></i></button>
+    </div>
+  </div>
+
   <!-- NUTRITION -->
 
   <div id="sp-nutrition" class="sc">
@@ -595,301 +443,152 @@ button.ef.cp{background:var(–rol);color:var(–ro);}
       <div class="nt2-sub">This week vs your goals</div>
       <div class="nr"><div class="nr-top"><span class="nr-label">Protein</span><span class="nr-val">68 / 80g</span></div><div class="nb"><div class="nf" style="width:0%;background:var(--or)" data-w="85"></div></div></div>
       <div class="nr"><div class="nr-top"><span class="nr-label">Carbs</span><span class="nr-val">210 / 250g</span></div><div class="nb"><div class="nf" style="width:0%;background:var(--ro)" data-w="84"></div></div></div>
-      <div class="nr"><div class="nr-top"><span class="nr-label">Fats</span><span class="nr-val">42 / 65g</span></div><div class="nb"><div class="nf" style="width:0%;background:#f0a060" data-w="65"></div></div></div>
-      <div class="nr"><div class="nr-top"><span class="nr-label">Calories</span><span class="nr-val">1,820 / 2,000 kcal</span></div><div class="nb"><div class="nf" style="width:0%;background:var(--ro)" data-w="91"></div></div></div>
+      <div class="nr"><div class="nr-top"><span class="nr-label">Fats</span><span class="nr-val">42 / 65g</span></div><div class="nb"><div class="nf" style="width:0%;background:#e0a878" data-w="65"></div></div></div>
+      <div class="nr"><div class="nr-top"><span class="nr-label">Calories</span><span class="nr-val">1,820 / 2,000</span></div><div class="nb"><div class="nf" style="width:0%;background:var(--ro)" data-w="91"></div></div></div>
       <div class="nr"><div class="nr-top"><span class="nr-label">Fibre</span><span class="nr-val">22 / 30g</span></div><div class="nb"><div class="nf" style="width:0%;background:var(--or)" data-w="73"></div></div></div>
     </div>
     <div class="nc">
       <div class="nt2" style="font-size:16px;margin-bottom:10px;">Goals this week</div>
       <div class="chips">
-        <span class="chip co">Protein ↓ needs work</span>
-        <span class="chip cg">Carbs ✓</span>
-        <span class="chip co">Fats ↓ low</span>
-        <span class="chip cg">Calories ✓</span>
-        <span class="chip co">Fibre ↓ add spinach</span>
+        <span class="chip co">Protein ↓ needs work</span><span class="chip cg">Carbs ✓</span>
+        <span class="chip co">Fats ↓ low</span><span class="chip cg">Calories ✓</span><span class="chip co">Fibre ↓</span>
       </div>
     </div>
-    <button class="bp" style="width:100%;margin-top:4px;background:#2d6a4f;">Get monthly report →</button>
+    <button class="bp" style="background:var(--green);">Get monthly report →</button>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-
-// ── RATE LIMIT HANDLER ──
-let requestsRemaining = 10;
-
-async function geminiFetch(body) {
-  const resp = await fetch('/api/gemini', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  const data = await resp.json();
-  if (resp.status === 429) {
-    sh("You've used all 10 free AI requests today. Come back tomorrow! 🌅");
-    throw new Error('Rate limit reached');
-  }
-  if (data._meta) {
-    requestsRemaining = data._meta.remaining;
-    updateUsageBadge();
-    // Show warning badge when 3 or fewer requests remain
-    const badge = document.getElementById('usage-badge');
-    const count = document.getElementById('badge-count');
-    if (badge && count) {
-      count.textContent = data._meta.remaining;
-      badge.style.display = data._meta.remaining <= 3 ? 'block' : 'none';
-    }
-  }
-  if (!resp.ok) throw new Error(data.error || 'API error');
-  return data;
-}
-
-function updateUsageBadge() {
-  const badge = document.getElementById('usage-badge');
-  if (badge) {
-    badge.textContent = requestsRemaining + ' AI requests left today';
-    badge.style.display = requestsRemaining <= 3 ? 'block' : 'none';
-  }
-}
-
-// ── DATA ──
 const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 let meals=['','','','','','',''];
-let gd=[
-  {cat:'Vegetables',em:'🥦',items:[{n:'Spinach (palak)',q:'500',u:'g'},{n:'Tomatoes',q:'4',u:'pcs'},{n:'Onions',q:'4',u:'pcs'},{n:'Potatoes',q:'500',u:'g'},{n:'Capsicum',q:'2',u:'pcs'}]},
-  {cat:'Dairy',em:'🥛',items:[{n:'Paneer',q:'400',u:'g'},{n:'Curd',q:'1',u:'kg'},{n:'Milk',q:'2',u:'L'}]},
-  {cat:'Grains & lentils',em:'🌾',items:[{n:'Basmati rice',q:'2',u:'kg'},{n:'Toor dal',q:'500',u:'g'},{n:'Rajma',q:'500',u:'g'},{n:'Poha',q:'500',u:'g'}]},
-  {cat:'Spices & oils',em:'🫙',items:[{n:'Mustard oil',q:'1',u:'L'},{n:'Cumin seeds',q:'100',u:'g'},{n:'Turmeric',q:'100',u:'g'}]},
-];
+let gd=[];
 const lqs=[
-  {q:'Do you prefer organic produce?',opts:['Yes always','Only for some items','No preference']},
+  {q:'Do you prefer organic produce?',opts:['Yes always','Only some items','No preference']},
   {q:'Do you cook with a budget in mind?',opts:['Yes, keep it tight','Flexible','No limit']},
   {q:'How many people are you prepping for?',opts:['Just me','2 people','Family of 3–4','5+']},
   {q:'Preferred grocery store?',opts:['Local market','Zepto / Blinkit','BigBasket','Mixed']},
 ];
-let chk={},ls=0;
-let cms=[{r:'bot',t:"Hi Sea! I'm your Preppy assistant 🍽️ Ask me about recipes, swaps, nutrition, or budget tips!"}];
-let ri=0;
-const br=["Great choice! Want me to suggest complementary meals for the week?","Got it! Any brand preferences for staples like oil or dal?","Noted! How often do you shop — once or twice a week?","Done! Check the Grocery tab for your full list 🛒"];
+let chk={},ls=0,requestsRemaining=10;
+let cms=[{r:'bot',t:"Hi! I'm Preppy 🍽️ Ask me about recipes, swaps, nutrition or budget tips!"}];
 
-// ── SPLASH ──
-function setState(state){
-  // Remove all states
-  document.body.className='';
-  // Add new state
-  document.body.classList.add('state-'+state);
-}
+// ── STATE MACHINE ──
+function setState(s){document.body.className='state-'+s;}
 
 window.addEventListener('load',()=>{
-  // Start with splash
   setState('splash');
   setTimeout(()=>{
-    // Fade out splash
     document.getElementById('splash').classList.add('hiding');
-    setTimeout(()=>{
-      // Show onboarding
-      setState('onboarding');
-    },500);
+    setTimeout(()=>setState('onboarding'),500);
   },2200);
 });
 
-// ── ONBOARDING ──
-function obSel(el,step){
-  document.querySelectorAll('#'+step+' .ob-opt').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
+// ── GEMINI FETCH ──
+async function geminiFetch(body){
+  const resp=await fetch('/api/gemini',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  });
+  const data=await resp.json();
+  if(resp.status===429){sh("You've used all 10 free AI requests today. Come back tomorrow! 🌅");throw new Error('limit');}
+  if(data._meta){
+    requestsRemaining=data._meta.remaining;
+    const b=document.getElementById('usage-badge'),c=document.getElementById('badge-count');
+    if(b&&c){c.textContent=data._meta.remaining;b.style.display=data._meta.remaining<=3?'block':'none';}
+  }
+  if(!resp.ok)throw new Error(data.error||'API error');
+  return data;
 }
+
+// ── ONBOARDING ──
+function obSel(el,step){document.querySelectorAll('#'+step+' .ob-opt').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
 function obNext(n){
   document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('on'));
   document.getElementById('ob'+n).classList.add('on');
-  ['p1','p2','p3','p4'].forEach((id,i)=>{
-    document.getElementById(id).classList.toggle('on',i<n);
-  });
+  ['p1','p2','p3','p4'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',i<n));
 }
-function obDone(){
-  try{ gtag('event','onboarding_complete'); }catch(e){}
-  setState('app');
-}
+function obDone(){try{gtag('event','onboarding_complete');}catch(e){}setState('app');}
+function setGoal(el,t){document.querySelectorAll('.ob-goal-chip').forEach(c=>c.classList.remove('on'));el.classList.add('on');document.getElementById('goal-inp').value=t;}
 
-// ── GOAL ──
-function setGoal(el,text){
-  document.querySelectorAll('.ob-goal-chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
-  document.getElementById('goal-inp').value=text;
-}
+// ── PLAN ──
+function triggerUpload(){document.getElementById('file-inp').click();}
+function showManual(){const f=document.getElementById('manual-form');f.classList.add('show');f.scrollIntoView({behavior:'smooth'});}
+function retakePhoto(){document.getElementById('photo-preview-wrap').style.display='none';document.getElementById('file-inp').value='';}
+function bmf(){document.getElementById('mf').innerHTML=days.map((d,i)=>`<div class="dr"><span class="dl">${d}</span><input class="mi" id="meal-${i}" value="${meals[i]}" placeholder="e.g. Dal rice + salad" onchange="meals[${i}]=this.value"/></div>`).join('');}
 
-// ── PLAN SCREEN ACTIONS ──
-function triggerUpload(){
-  document.getElementById('file-inp').click();
-}
-function showManual(){
-  const f=document.getElementById('manual-form');
-  f.classList.add('show');
-  f.scrollIntoView({behavior:'smooth',block:'start'});
-}
-function retakePhoto(){
-  document.getElementById('photo-preview-wrap').style.display='none';
-  document.getElementById('file-inp').value='';
-}
-
-// ── MEAL FORM ──
-function bmf(){
-  document.getElementById('mf').innerHTML=days.map((d,i)=>`
-    <div class="dr">
-      <span class="dl">${d}</span>
-      <input class="mi" id="meal-${i}" value="${meals[i]}" placeholder="e.g. Dal rice + salad" onchange="meals[${i}]=this.value"/>
-    </div>`).join('');
-}
-
-// ── GROCERY ──
+// ── GROCERY RENDER ──
 function bg(){
-  let chkNew={};
+  if(!gd.length){
+    document.getElementById('gl').innerHTML='<div class="empty-state"><i class="ti ti-shopping-cart-off"></i>No list yet. Add meals on the Plan tab and tap Generate grocery list.</div>';
+    return;
+  }
   document.getElementById('gl').innerHTML=gd.map((c,ci)=>`
     <div class="cat-block">
-      <div class="cat-head">
-        <span style="font-size:18px">${c.em}</span>
-        <span class="cat-name">${c.cat}</span>
-        <span class="cat-count">${c.items.length} items</span>
-      </div>
-      ${c.items.map((it,ii)=>{
-        const k=`${ci}-${ii}`,d=chk[k];
-        return`<div class="item-row">
-          <div class="item-chk${d?' on':''}" onclick="tg('${k}')">
-            ${d?'<i class="ti ti-check" style="font-size:11px;color:#fff"></i>':''}
-          </div>
-          <span class="item-name${d?' dn':''}">${it.n}</span>
-          <div class="qty-wrap">
-            <input class="qty-num" value="${it.q}" onchange="gd[${ci}].items[${ii}].q=this.value" type="number" min="0"/>
-            <span class="qty-unit">${it.u}</span>
-          </div>
-        </div>`;
-      }).join('')}
+      <div class="cat-head"><span style="font-size:18px">${c.em||'🛒'}</span><span class="cat-name">${c.cat}</span><span class="cat-count">${c.items.length} items</span></div>
+      ${c.items.map((it,ii)=>{const k=ci+'-'+ii,d=chk[k];return`<div class="item-row"><div class="item-chk${d?' on':''}" onclick="tg('${k}')">${d?'<i class="ti ti-check" style="font-size:11px;color:#fff"></i>':''}</div><span class="item-name${d?' dn':''}">${it.n}</span><div class="qty-wrap"><input class="qty-num" value="${it.q}" type="number" min="0" onchange="gd[${ci}].items[${ii}].q=this.value"/><span class="qty-unit">${it.u||''}</span></div></div>`;}).join('')}
     </div>`).join('');
 }
-
 function tg(k){chk[k]=!chk[k];bg();}
+function copyList(){if(!gd.length){sh('No list to copy yet!');return;}const t=gd.map(c=>c.cat+':\n'+c.items.map(i=>`• ${i.n} — ${i.q} ${i.u||''}`).join('\n')).join('\n\n');navigator.clipboard&&navigator.clipboard.writeText(t);sh('List copied! ✓');}
 
-function copyList(){
-  const t=gd.map(c=>c.cat+':\n'+c.items.map(i=>`• ${i.n} — ${i.q} ${i.u}`).join('\n')).join('\n\n');
-  navigator.clipboard&&navigator.clipboard.writeText(t);
-  sh('List copied! ✓');
-}
-
-// ── PHOTO UPLOAD ──
+// ── PHOTO ──
 async function handlePhoto(e){
-  const file=e.target.files[0];
-  if(!file)return;
+  const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=async(ev)=>{
-    const prev=document.getElementById('photo-preview');
-    prev.src=ev.target.result;
+    document.getElementById('photo-preview').src=ev.target.result;
     document.getElementById('photo-preview-wrap').style.display='block';
     await analysePhoto(ev.target.result.split(',')[1],file.type||'image/jpeg');
   };
   reader.readAsDataURL(file);
 }
-
-async function analysePhoto(base64,mediaType){
-  showAIBar('Reading your meal plan photo...');
+async function analysePhoto(base64,mt){
+  aiBar('Reading your meal plan...');
   try{
     const goal=document.getElementById('goal-inp').value||'eating healthy';
-    const data=await geminiFetch({
-        
-        max_tokens:1000,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-          {type:'text',text:`This is a meal plan image. Extract meals for each day. User goal: ${goal}.
-Extract ALL meals visible. If you see Indian dish names, keep them as-is.
-Return ONLY valid JSON, no markdown, no explanation, no extra text:
-{"Mon":"full meal description","Tue":"full meal description","Wed":"full meal description","Thu":"full meal description","Fri":"full meal description","Sat":"full meal description","Sun":"full meal description"}
-Use empty string "" for days not visible. Preserve original meal names from the image.`}
-        ]}]
-      });
-    const parsed=JSON.parse(data.content[0].text.trim());
-    ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach((d,i)=>{
-      if(parsed[d]!==undefined){
-        meals[i]=parsed[d];
-        const inp=document.getElementById('meal-'+i);
-        if(inp){inp.value=parsed[d];inp.classList.add('ai-filled');}
-      }
-    });
-    showAIBar('✓ Meals extracted from photo!',true);
-    sh('Photo scanned successfully ✓');
-    gtag('event','photo_scanned');
-  }catch(err){
-    showAIBar('Could not read photo — please fill manually.',true);
-    console.error(err);
-  }
+    const data=await geminiFetch({max_tokens:1000,messages:[{role:'user',content:[
+      {type:'image',source:{type:'base64',media_type:mt,data:base64}},
+      {type:'text',text:`Extract the meals for each day from this meal plan image. Goal: ${goal}. Return ONLY valid JSON, no markdown: {"Mon":"meal","Tue":"meal","Wed":"meal","Thu":"meal","Fri":"meal","Sat":"meal","Sun":"meal"} Use empty string for missing days. Keep original dish names.`}
+    ]}]});
+    const p=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,'').trim());
+    days.forEach((d,i)=>{if(p[d]!==undefined){meals[i]=p[d];const inp=document.getElementById('meal-'+i);if(inp){inp.value=p[d];inp.classList.add('ai-filled');}}});
+    document.getElementById('manual-form').classList.add('show');
+    aiBar('✓ Meals extracted!',true);sh('Photo scanned ✓');
+    try{gtag('event','photo_scanned');}catch(e){}
+  }catch(err){if(err.message!=='limit')aiBar('Could not read photo — fill manually.',true);console.error(err);}
 }
 
 // ── PLAN WITH AI ──
 async function planWithAI(){
-  const goal=document.getElementById('goal-inp').value||'healthy balanced Indian home cooking';
-  showAIBar('Planning your week with AI...');
+  const goal=document.getElementById('goal-inp').value||'healthy Indian home cooking';
+  aiBar('Planning your week...');
   document.getElementById('manual-form').classList.add('show');
   try{
-    const data=await geminiFetch({
-      max_tokens:1000,
-      messages:[{role:'user',content:`Create a practical 7-day Indian home meal plan for someone whose goal is: ${goal}.
-
-Use common Indian home-cooked meals. Examples:
-- Breakfast options: Poha, Upma, Paratha with curd, Idli-sambar, Dosa, Bread omelette, Besan chilla, Moong dal chilla
-- Lunch options: Dal rice, Rajma chawal, Roti with sabzi, Chole rice, Kadhi chawal, Palak paneer roti, Aloo gobi roti
-- Dinner options: Roti with dal/sabzi/paneer, Khichdi, Vegetable soup, Dalia, Light salad with roti
-
-Return ONLY valid JSON, no markdown, no explanation, no extra text:
-{"Mon":"[breakfast], [lunch], [dinner]","Tue":"[breakfast], [lunch], [dinner]","Wed":"[breakfast], [lunch], [dinner]","Thu":"[breakfast], [lunch], [dinner]","Fri":"[breakfast], [lunch], [dinner]","Sat":"[breakfast], [lunch], [dinner]","Sun":"[breakfast], [lunch], [dinner]"}`}]
-    });
-    const raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
-    const parsed=JSON.parse(raw);
-    ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].forEach((d,i)=>{
-      if(parsed[d]){
-        meals[i]=parsed[d];
-        const inp=document.getElementById('meal-'+i);
-        if(inp){inp.value=parsed[d];inp.classList.add('ai-filled');}
-      }
-    });
-    showAIBar('✓ AI meal plan ready!',true);
-    sh('AI meal plan generated ✓');
+    const data=await geminiFetch({max_tokens:1000,messages:[{role:'user',content:`Create a 7-day Indian home meal plan for goal: ${goal}. Use common Indian meals (Poha, Upma, Dal rice, Rajma chawal, Roti sabzi, Khichdi etc). Return ONLY valid JSON, no markdown: {"Mon":"breakfast, lunch, dinner","Tue":"...","Wed":"...","Thu":"...","Fri":"...","Sat":"...","Sun":"..."}`}]});
+    const p=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,'').trim());
+    days.forEach((d,i)=>{if(p[d]){meals[i]=p[d];const inp=document.getElementById('meal-'+i);if(inp){inp.value=p[d];inp.classList.add('ai-filled');}}});
+    aiBar('✓ Plan ready!',true);sh('AI meal plan generated ✓');
     try{gtag('event','ai_plan_generated');}catch(e){}
-  }catch(err){
-    showAIBar('Something went wrong — try again.',true);
-    console.error(err);
-  }
+  }catch(err){if(err.message!=='limit')aiBar('Something went wrong — try again.',true);console.error(err);}
 }
-
-function showAIBar(msg,hide){
-  const bar=document.getElementById('ai-bar');
-  document.getElementById('ai-bar-text').textContent=msg;
-  bar.classList.add('show');
-  if(hide)setTimeout(()=>bar.classList.remove('show'),3000);
-}
+function aiBar(msg,hide){const b=document.getElementById('ai-bar');document.getElementById('ai-bar-text').textContent=msg;b.classList.add('show');if(hide)setTimeout(()=>b.classList.remove('show'),3000);}
 
 // ── GENERATE GROCERY ──
 async function generateGrocery(){
   const filled=meals.filter(m=>m.trim());
   if(!filled.length)return false;
   try{
-    const data=await geminiFetch({
-      max_tokens:2000,
-      messages:[{role:'user',content:`You are an expert Indian grocery planner. Based on this weekly meal plan, generate a COMPLETE grocery list with every single ingredient needed including all spices, oils, fresh herbs, dairy and staples.
+    const data=await geminiFetch({max_tokens:2000,messages:[{role:'user',content:`You are an expert Indian grocery planner. Generate a COMPLETE grocery list with EVERY ingredient needed for this weekly meal plan including all spices, oils, herbs and staples.
 
-Weekly meal plan:
+Meals:
 ${days.map((d,i)=>meals[i]?d+': '+meals[i]:'').filter(Boolean).join('\n')}
 
-Important rules:
-- List EVERY ingredient needed for each dish — do not skip anything
-- Always include base ingredients: onions, tomatoes, ginger, garlic, green chillies, fresh coriander
-- Always include whole spices: cumin seeds, mustard seeds, bay leaves, cloves, cardamom if needed
-- Always include ground spices: turmeric, red chilli powder, coriander powder, garam masala, cumin powder
-- Include cooking oil or ghee
-- Use Indian market quantities: vegetables in grams/kg, liquids in ml/L, spices in grams
-- Be thorough — a family should not need to buy anything extra
+Always include base ingredients (onions, tomatoes, ginger, garlic, green chillies, fresh coriander), whole + ground spices (turmeric, cumin seeds, mustard seeds, red chilli powder, garam masala, coriander powder), and cooking oil. Use realistic Indian quantities.
 
-Return ONLY a valid JSON array. No markdown, no explanation, no text before or after the JSON:
-[{"cat":"Vegetables & Herbs","em":"🥦","items":[{"n":"Onions","q":"1","u":"kg"},{"n":"Tomatoes","q":"500","u":"g"},{"n":"Ginger","q":"100","u":"g"},{"n":"Garlic","q":"1","u":"bulb"},{"n":"Green chillies","q":"50","u":"g"},{"n":"Fresh coriander","q":"1","u":"bunch"}]},{"cat":"Dairy & Alternatives","em":"🥛","items":[{"n":"Milk","q":"1","u":"L"},{"n":"Curd","q":"500","u":"g"}]},{"cat":"Grains & Lentils","em":"🌾","items":[{"n":"Basmati rice","q":"1","u":"kg"},{"n":"Toor dal","q":"500","u":"g"}]},{"cat":"Spices & Masalas","em":"🫙","items":[{"n":"Turmeric powder","q":"50","u":"g"},{"n":"Red chilli powder","q":"50","u":"g"},{"n":"Garam masala","q":"50","u":"g"},{"n":"Cumin seeds","q":"50","u":"g"},{"n":"Mustard seeds","q":"50","u":"g"}]},{"cat":"Oils & Condiments","em":"🫒","items":[{"n":"Cooking oil","q":"500","u":"ml"},{"n":"Ghee","q":"200","u":"g"}]}]`}]
-    });
+Return ONLY a valid JSON array, no markdown, no text before or after:
+[{"cat":"Vegetables & Herbs","em":"🥦","items":[{"n":"Onions","q":"1","u":"kg"}]},{"cat":"Dairy","em":"🥛","items":[{"n":"Milk","q":"1","u":"L"}]},{"cat":"Grains & Lentils","em":"🌾","items":[{"n":"Rice","q":"1","u":"kg"}]},{"cat":"Spices & Masalas","em":"🫙","items":[{"n":"Turmeric","q":"50","u":"g"}]},{"cat":"Oils & Condiments","em":"🫒","items":[{"n":"Cooking oil","q":"500","u":"ml"}]}]`}]});
     const raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
     const parsed=JSON.parse(raw);
     gd=parsed.filter(c=>c.items&&c.items.length>0);
@@ -898,27 +597,28 @@ Return ONLY a valid JSON array. No markdown, no explanation, no text before or a
   }catch(err){console.error('Grocery error:',err);return false;}
 }
 
-// ── LOADING FLOW ──
+// ── LOADING FLOW (guarantees list opens) ──
 async function sl(){
+  const filled=meals.filter(m=>m.trim());
+  if(!filled.length){sh('Add some meals first! 🍽️');return;}
   ls=0;
-  const lo=document.getElementById('lo');
-  lo.classList.add('on');
+  document.getElementById('lo').classList.add('on');
   document.getElementById('lb').style.width='0%';
   const aiP=generateGrocery();
   showLQ(aiP);
 }
-
 async function showLQ(aiP){
   if(ls>=lqs.length){
-    document.getElementById('lq').textContent='';
+    document.getElementById('lq').textContent='Finalising your list...';
     document.getElementById('lop').innerHTML='';
     document.getElementById('lb').style.width='90%';
-    await aiP;
+    const ok=await aiP;
     document.getElementById('lb').style.width='100%';
     setTimeout(()=>{
       document.getElementById('lo').classList.remove('on');
-      sti('grocery');bg();
-      sh('Grocery list ready! 🛒');
+      bg();
+      st('grocery',document.querySelectorAll('.nt')[1]);
+      sh(ok?'Grocery list ready! 🛒':'Used sample list — try again for AI');
     },400);
     return;
   }
@@ -927,79 +627,48 @@ async function showLQ(aiP){
   document.getElementById('lop').innerHTML=q.opts.map(o=>`<button class="lob" onclick="pickLQ(this)">${o}</button>`).join('');
   document.getElementById('lb').style.width=Math.round((ls/lqs.length)*80)+'%';
 }
+function pickLQ(el){document.querySelectorAll('.lob').forEach(b=>b.classList.remove('on'));el.classList.add('on');ls++;setTimeout(()=>showLQ(window._aiP),450);}
 
-function pickLQ(el){
-  document.querySelectorAll('.lob').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  ls++;
-  setTimeout(()=>showLQ(null),500);
-}
+// store promise globally so pickLQ can access
+const _origSl=sl;
+sl=async function(){
+  const filled=meals.filter(m=>m.trim());
+  if(!filled.length){sh('Add some meals first! 🍽️');return;}
+  ls=0;
+  document.getElementById('lo').classList.add('on');
+  document.getElementById('lb').style.width='0%';
+  window._aiP=generateGrocery();
+  showLQ(window._aiP);
+};
 
 // ── CHAT ──
 async function sendChat(){
-  const inp=document.getElementById('ci');
-  const t=inp.value.trim();
+  const inp=document.getElementById('ci'),t=inp.value.trim();
   if(!t)return;
-  cms.push({r:'usr',t});
-  inp.value='';
-  bc();
+  cms.push({r:'usr',t});inp.value='';bc();
   const el=document.getElementById('ca');
-  const ty=document.createElement('div');
-  ty.className='bu typ';
+  const ty=document.createElement('div');ty.className='bu typ';
   ty.innerHTML='<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
   el.appendChild(ty);el.scrollTop=el.scrollHeight;
   try{
-    const data=await geminiFetch({
-        
-        max_tokens:400,
-        system:'You are Preppy, a friendly meal prep and grocery assistant for Indian households. Help with meal planning, recipes, grocery budgets, nutrition, and ingredient swaps. Keep responses short, warm and practical. Use occasional food emojis.',
-        messages:cms.slice(-8).map(m=>({role:m.r==='bot'?'assistant':'user',content:m.t}))
-      });
-    ty.remove();
-    cms.push({r:'bot',t:data.content[0].text});
-    bc();
-  }catch(err){
-    ty.remove();
-    cms.push({r:'bot',t:'Sorry, something went wrong. Try again! 🙏'});
-    bc();
-  }
+    const data=await geminiFetch({max_tokens:400,system:'You are Preppy, a friendly Indian meal prep and grocery assistant. Help with recipes, swaps, nutrition and budget tips. Keep responses short, warm and practical. Use occasional food emojis.',messages:cms.slice(-8).map(m=>({role:m.r==='bot'?'assistant':'user',content:m.t}))});
+    ty.remove();cms.push({r:'bot',t:data.content[0].text});bc();
+  }catch(err){ty.remove();cms.push({r:'bot',t:'Sorry, something went wrong. Try again! 🙏'});bc();}
 }
-
-function bc(){
-  const el=document.getElementById('ca');
-  el.innerHTML=cms.map(m=>`<div class="bu ${m.r==='bot'?'bot':'usr'}">${m.t}</div>`).join('');
-  el.scrollTop=el.scrollHeight;
-}
+function bc(){const el=document.getElementById('ca');el.innerHTML=cms.map(m=>`<div class="bu ${m.r==='bot'?'bot':'usr'}">${m.t}</div>`).join('');el.scrollTop=el.scrollHeight;}
 
 // ── TABS ──
 function st(tab,el){
   document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
   document.querySelectorAll('.nt').forEach(t=>t.classList.remove('on'));
   document.getElementById('sp-'+tab).classList.add('on');
-  el.classList.add('on');
-  if(tab==='nutrition')setTimeout(animateBars,100);
-  gtag('event','tab_view',{tab_name:tab});
-}
-function sti(tab){
-  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
-  document.querySelectorAll('.nt').forEach(t=>t.classList.remove('on'));
-  document.getElementById('sp-'+tab).classList.add('on');
-  ['plan','grocery','chat','nutrition'].forEach((t,i)=>{
-    if(t===tab)document.querySelectorAll('.nt')[i].classList.add('on');
-  });
-}
-
-function animateBars(){
-  document.querySelectorAll('.nf').forEach(b=>{b.style.width=b.dataset.w+'%';});
+  if(el)el.classList.add('on');
+  if(tab==='nutrition')setTimeout(()=>document.querySelectorAll('.nf').forEach(b=>b.style.width=b.dataset.w+'%'),100);
+  try{gtag('event','tab_view',{tab_name:tab});}catch(e){}
 }
 
 // ── TOAST ──
-function sh(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.style.opacity='1';
-  t.style.transform='translateX(-50%) translateY(0)';
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(80px)';},2400);
-}
+function sh(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(80px)';},2400);}
 
 // ── INIT ──
 bmf();bg();bc();
