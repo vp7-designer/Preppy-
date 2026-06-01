@@ -83,7 +83,7 @@ if (!body || !body.messages) {
 
 const contents = toGeminiContents(body.messages, body.system);
 
-// FIX 2: use the current model name (gemini-2.0-flash is deprecated)
+// FIX 2: use the current model name (gemini-2.5-flash is deprecated)
 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
 const response = await fetch(url, {
